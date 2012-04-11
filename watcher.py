@@ -311,6 +311,8 @@ class WatcherDaemon(Daemon):
                 ret = self._addMask(pyinotify.IN_MOVED_FROM | pyinotify.IN_MOVED_TO, ret)
             elif 'close' == mask:
                 ret = self._addMask(pyinotify.IN_CLOSE_WRITE | IN_CLOSE_NOWRITE, ret)
+            elif 'dont_follow' == mask:
+                ret = self._addMask(pyinotify.IN_DONT_FOLLOW, ret)
 
         return ret
 

@@ -179,10 +179,18 @@ class EventHandler(pyinotify.ProcessEvent):
 
     def runCommand(self, event):
         t = Template(self.command)
-        command = t.substitute(watched=self.shellquote(event.path),
-                               filename=self.shellquote(event.pathname),
-                               tflags=self.shellquote(event.maskname),
-                               nflags=self.shellquote(event.mask))
+        try:
+            command = t.substitute(watched=self.shellquote(event.path),
+                                   filename=self.shellquote(event.pathname),
+                                   tflags=self.shellquote(event.maskname),
+                                   nflags=self.shellquote(event.mask),
+                                   src_pathname=self.shellquote(event.src_pathname))
+        except AttributeError:
+            command = t.substitute(watched=self.shellquote(event.path),
+                                   filename=self.shellquote(event.pathname),
+                                   tflags=self.shellquote(event.maskname),
+                                   nflags=self.shellquote(event.mask),
+                                   src_pathname='')
         try:
             os.system(command)
         except OSError, err:

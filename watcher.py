@@ -181,15 +181,19 @@ class EventHandler(pyinotify.ProcessEvent):
         t = Template(self.command)
         try:
             command = t.substitute(watched=self.shellquote(event.path),
-                                   filename=self.shellquote(event.pathname),
+                                   pathname=self.shellquote(event.pathname),
                                    tflags=self.shellquote(event.maskname),
                                    nflags=self.shellquote(event.mask),
+                                   path=self.shellquote(event.path),
+                                   name=self.shellquote(event.name),
                                    src_pathname=self.shellquote(event.src_pathname))
         except AttributeError:
             command = t.substitute(watched=self.shellquote(event.path),
-                                   filename=self.shellquote(event.pathname),
+                                   pathname=self.shellquote(event.pathname),
                                    tflags=self.shellquote(event.maskname),
                                    nflags=self.shellquote(event.mask),
+                                   path=self.shellquote(event.path),
+                                   name=self.shellquote(event.name),
                                    src_pathname='')
         try:
             os.system(command)

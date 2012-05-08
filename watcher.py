@@ -187,6 +187,11 @@ class EventHandler(pyinotify.ProcessEvent):
                                    path=self.shellquote(event.path),
                                    name=self.shellquote(event.name),
                                    src_pathname=self.shellquote(event.src_pathname))
+                                    # the event will only have a src_pathname attribute if...
+                                    # we are looking for both moved_from and moved_to events
+                                    # and a file was moved both from and to a watched dir
+                                    # and this is a moved_to event.
+                                    # Otherwise we get a AttributeError and just set it to the empty string.
         except AttributeError:
             command = t.substitute(watched=self.shellquote(event.path),
                                    pathname=self.shellquote(event.pathname),
@@ -323,6 +328,8 @@ class WatcherDaemon(Daemon):
                 ret = self._addMask(pyinotify.IN_MOVED_FROM | pyinotify.IN_MOVED_TO, ret)
             elif 'close' == mask:
                 ret = self._addMask(pyinotify.IN_CLOSE_WRITE | IN_CLOSE_NOWRITE, ret)
+            elif 'dont_follow' == mask:
+                ret = self._addMask(pyinotify.IN_DONT_FOLLOW, ret)
 
         return ret
 

@@ -249,6 +249,10 @@ class EventHandler(pyinotify.ProcessEvent):
         print "Opened: ", event.pathname
         self.runCommand(event)
 
+    def process_IN_Q_OVERFLOW(self, event):
+        print "Queue overflowed!"
+        self.runCommand(event)
+
 class WatcherDaemon(Daemon):
 
     def __init__(self, config):
@@ -330,6 +334,10 @@ class WatcherDaemon(Daemon):
                 ret = self._addMask(pyinotify.IN_CLOSE_WRITE | IN_CLOSE_NOWRITE, ret)
             elif 'dont_follow' == mask:
                 ret = self._addMask(pyinotify.IN_DONT_FOLLOW, ret)
+            elif 'oneshot' == mask:
+                ret = self._addMask(pyinotify.IN_ONESHOT, ret)
+            elif 'q_overflow' == mask:
+                ret = self._addMask(pyinotify.IN_Q_OVERFLOW, ret)
 
         return ret
 

@@ -168,10 +168,9 @@ class Daemon:
         """
 
 class EventHandler(pyinotify.ProcessEvent):
-    def __init__(self, command, rootfolder):
+    def __init__(self, command):
         pyinotify.ProcessEvent.__init__(self)
         self.command = command
-        self.prefixlength = len(rootfolder)+1
 
     # from http://stackoverflow.com/questions/35817/how-to-escape-os-system-calls-in-python
     def shellquote(self,s):
@@ -181,13 +180,11 @@ class EventHandler(pyinotify.ProcessEvent):
     def runCommand(self, event):
         t = Template(self.command)
         try:
-            command = t.substitute(watched=self.shellquote(event.path),
-                                   pathname=self.shellquote(event.pathname),
+            command = t.substitute(pathname=self.shellquote(event.pathname),
                                    tflags=self.shellquote(event.maskname),
                                    nflags=self.shellquote(event.mask),
                                    path=self.shellquote(event.path),
                                    name=self.shellquote(event.name),
-                                   relpath=self.shellquote(event.path[self.prefixlength:]),
                                    src_pathname=self.shellquote(event.src_pathname))
                                     # the event will only have a src_pathname attribute if...
                                     # we are looking for both moved_from and moved_to events
@@ -195,13 +192,11 @@ class EventHandler(pyinotify.ProcessEvent):
                                     # and this is a moved_to event.
                                     # Otherwise we get a AttributeError and just set it to the empty string.
         except AttributeError:
-            command = t.substitute(watched=self.shellquote(event.path),
-                                   pathname=self.shellquote(event.pathname),
+            command = t.substitute(pathname=self.shellquote(event.pathname),
                                    tflags=self.shellquote(event.maskname),
                                    nflags=self.shellquote(event.mask),
                                    path=self.shellquote(event.path),
                                    name=self.shellquote(event.name),
-                                   relpath=self.shellquote(event.path[self.prefixlength:]),
                                    src_pathname='')
         try:
             os.system(command)
@@ -281,7 +276,7 @@ class WatcherDaemon(Daemon):
             command   = self.config.get(section,'command')
 
             wm = pyinotify.WatchManager()
-            handler = EventHandler(command, folder)
+            handler = EventHandler(command)
 
             wdds.append(wm.add_watch(folder, mask, rec=recursive,auto_add=autoadd))
             # BUT we need a new ThreadNotifier so I can specify a different

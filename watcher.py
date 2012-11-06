@@ -37,6 +37,7 @@ from signal import SIGTERM
 import pyinotify
 import datetime
 import subprocess
+import shlex
 from types import *
 from string import Template
 import ConfigParser
@@ -191,7 +192,7 @@ class EventHandler(pyinotify.ProcessEvent):
                                # and a file was moved both from and to a watched dir
                                # and this is a moved_to event.
         try:
-            os.system(command)
+            subprocess.call(shlex.split(command))
         except OSError, err:
             print "Failed to run command '%s' %s" % (command, str(err))
 

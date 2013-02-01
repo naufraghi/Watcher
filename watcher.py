@@ -179,25 +179,17 @@ class EventHandler(pyinotify.ProcessEvent):
 
     def runCommand(self, event):
         t = Template(self.command)
-        try:
-            command = t.substitute(pathname=self.shellquote(event.pathname),
-                                   tflags=self.shellquote(event.maskname),
-                                   nflags=self.shellquote(event.mask),
-                                   path=self.shellquote(event.path),
-                                   name=self.shellquote(event.name),
-                                   src_pathname=self.shellquote(event.src_pathname))
-                                    # the event will only have a src_pathname attribute if...
-                                    # we are looking for both moved_from and moved_to events
-                                    # and a file was moved both from and to a watched dir
-                                    # and this is a moved_to event.
-                                    # Otherwise we get a AttributeError and just set it to the empty string.
-        except AttributeError:
-            command = t.substitute(pathname=self.shellquote(event.pathname),
-                                   tflags=self.shellquote(event.maskname),
-                                   nflags=self.shellquote(event.mask),
-                                   path=self.shellquote(event.path),
-                                   name=self.shellquote(event.name),
-                                   src_pathname='')
+        command = t.substitute(pathname=self.shellquote(event.pathname),
+                               tflags=self.shellquote(event.maskname),
+                               nflags=self.shellquote(event.mask),
+                               path=self.shellquote(event.path),
+                               name=self.shellquote(event.name),
+                               src_pathname=self.shellquote(getattr(event, 'src_pathname', '')))
+                               # the event will only have a src_pathname attribute if...
+                               # we are looking for both moved_from and moved_to events
+                               # and a file was moved both from and to a watched dir
+                               # and this is a moved_to event.
+                               # Otherwise we get a AttributeError and just set it to the empty string.
         try:
             os.system(command)
         except OSError, err:

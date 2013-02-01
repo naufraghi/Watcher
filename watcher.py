@@ -190,7 +190,6 @@ class EventHandler(pyinotify.ProcessEvent):
                                # we are looking for both moved_from and moved_to events
                                # and a file was moved both from and to a watched dir
                                # and this is a moved_to event.
-                               # Otherwise we get a AttributeError and just set it to the empty string.
         try:
             os.system(command)
         except OSError, err:

@@ -181,6 +181,7 @@ class EventHandler(pyinotify.ProcessEvent):
     def runCommand(self, event):
         t = Template(self.command)
         command = t.substitute(pathname=self.shellquote(event.pathname),
+                               relpath=self.shellquote(event.pathname[len(event.path)+1:]),
                                tflags=self.shellquote(event.maskname),
                                nflags=self.shellquote(event.mask),
                                path=self.shellquote(event.path),

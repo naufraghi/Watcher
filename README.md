@@ -15,7 +15,7 @@ library.
 
 In Ubuntu (and Debian) you can install these with:
 
-    sudo apt-get install python python-pyinotify
+    sudo apt-get install python python-pyinotify python-argparse
 
 ## Configuration
 

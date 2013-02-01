@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # Copyright (c) 2010 Greggory Hernandez
+# Copyright (c) 2013 Matteo Bertini
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -270,7 +271,7 @@ class WatcherDaemon(Daemon):
             wm = pyinotify.WatchManager()
             handler = EventHandler(command)
 
-            wdds.append(wm.add_watch(folder, mask, rec=recursive,auto_add=autoadd))
+            wdds.append(wm.add_watch(folder, mask, rec=recursive, auto_add=autoadd))
             # BUT we need a new ThreadNotifier so I can specify a different
             # EventHandler instance for each job
             # this means that each job has its own thread as well (I think)

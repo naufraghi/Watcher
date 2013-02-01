@@ -263,7 +263,7 @@ class WatcherDaemon(Daemon):
             log(section + ": " + self.config.get(section,'watch'))
             # get the basic config info
             mask      = self._parseMask(self.config.get(section,'events').split(','))
-            folder    = self.config.get(section,'watch')
+            folder    = os.path.expanduser(self.config.get(section,'watch'))
             recursive = self.config.getboolean(section,'recursive')
             autoadd   = self.config.getboolean(section,'autoadd')
             command   = self.config.get(section,'command')
